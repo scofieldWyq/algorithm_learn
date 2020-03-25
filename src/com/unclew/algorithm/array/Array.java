@@ -10,8 +10,8 @@ package com.unclew.algorithm.array;
  * @since 1.0
  */
 public interface Array {
-    <T> void add(T e);
-    <T> void get(int index);
-    <T> T rem(T e);
+    void add(Object e);
+    Object get(int index);
+    void rem(Object e);
     long length();
 }
