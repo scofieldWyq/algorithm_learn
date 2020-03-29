@@ -7,20 +7,20 @@ package com.unclew.algorithm.array;
  * @author wuyingqiang
  * @since 1.0
  */
-public class TelescopicArray<T> implements TelescopicStrategy, Array<T>{
+public class TelescopicArray<T> implements TelescopicStrategy, Array<T> {
     private Object[] arr;
     private int size = 0;
 
     @Override
     public int stretch() {
-        if(arr == null ||  size + 1 >=  arr.length) {
+        if (arr == null || size + 1 >= arr.length) {
             // 伸展
             int stretchLength = size * 2;
-            if(stretchLength == 0) {
+            if (stretchLength == 0) {
                 stretchLength = 2;
             }
             Object[] arrBak = new Object[stretchLength];
-            if(arr != null)
+            if (arr != null)
                 System.arraycopy(arr, 0, arrBak, 0, arr.length);
 
             arr = arrBak;
@@ -31,7 +31,7 @@ public class TelescopicArray<T> implements TelescopicStrategy, Array<T>{
 
     @Override
     public int shrink() {
-        if(size > 2 && 2 * size < arr.length) {
+        if (size > 2 && 2 * size < arr.length) {
             // 收缩
             Object[] arrBak = new Object[arr.length / 2];
             System.arraycopy(arr, 0, arrBak, 0, size);
@@ -43,11 +43,11 @@ public class TelescopicArray<T> implements TelescopicStrategy, Array<T>{
 
     @Override
     public void insert(T ele, int index) {
-        if(index < 0 || index > size) {
-            return ;
+        if (index < 0 || index > size) {
+            return;
         }
 
-        T ele1 = (T)arr[index];
+        T ele1 = (T) arr[index];
         size++;
 
         // 开始处理
@@ -58,8 +58,8 @@ public class TelescopicArray<T> implements TelescopicStrategy, Array<T>{
 
     @Override
     public T get(int index) {
-        if(index < size && index >= 0) {
-            return (T)arr[index];
+        if (index < size && index >= 0) {
+            return (T) arr[index];
         }
 
         return null;
@@ -69,7 +69,7 @@ public class TelescopicArray<T> implements TelescopicStrategy, Array<T>{
     public int indexOf(T e) {
         int i = 0;
         while (i < size) {
-            if(arr[i].equals(e)){
+            if (arr[i].equals(e)) {
                 return i;
             }
 
@@ -88,13 +88,24 @@ public class TelescopicArray<T> implements TelescopicStrategy, Array<T>{
     @Override
     public void rem(T e) {
         int i = indexOf(e);
-
+        arr[i] = arr[--size];
         shrink();
-
     }
 
     @Override
     public T rem(int index) {
-        return null;
+        if (index < 0 || index > size) {
+            return null;
+        }
+
+        T ele = (T) arr[index];
+        this.rem(ele);
+
+        return ele;
+    }
+
+
+    public static void main(String[] args) {
+        // 测试
     }
 }
