@@ -1,4 +1,4 @@
-### 1. 数组
+### 数组
 
 关于数组来说，最常用的方式是
 
@@ -11,6 +11,74 @@ type var = array[index];
 ```
 
 > 二维数组(Array[n][m])来说，元素定位是：`base_addr + type_size * (m * n + index)`
+
+> 最基本的数组数据结构处理：插入(insert)、删除(delete)、随机查询(arr[index])
+
+**最方便**：`随机查询`
+**最低效**：`插入`和`删除`
+
+> **Note**: 使用数组最大的诱惑就是能够随机访问(`能够方便的 arr[index]`),但是由于为了
+> 保证数组数据连续性和有限空间的条件，往往在插入和删除的时候，都会伴随着要去维护这些条件
+> 而产生的高代价导致了数组在这方面操作的"低效"。
+
+> 然而，为了数组的随机访问，一般都都是考虑如何去优化这些低效操作。
+
+
+#### 1.1. 保持数组空间的有序性
+
+> 一般来说，为了保持数组空间有序性，然后就会通过一定策略(*什么时候要扩大空间量，什么时候缩小空间量*)来对数组进行空间的 `伸缩`。
+
+**1.1.1.两倍空间伸缩策略（我自己起的，多当真，实际上就是依据 2 倍空间 size 来进行空间的伸缩）**
+
+```java
+// 定义了伸缩的接口
+public interface TelescopicStrategy {
+    int stretch(); // 伸展
+    int shrink(); // 收缩
+}
+// 一般就是添加之前进行一次伸展操作，删除后进行一次收缩操作
+@Override
+public int stretch() {
+    if(arr == null ||  size + 1 >=  arr.length) {
+        // 伸展
+        Object[] arrBak = new Object[size * 2];
+        if(arr != null)
+            System.arraycopy(arr, 0, arrBak, 0, arr.length);
+            arr = arrBak;
+        }
+
+        return arr.length;
+    }
+
+@Override
+public int shrink() {
+    if(size > 2 && 2 * size < arr.length) {
+        // 收缩
+        Object[] arrBak = new Object[arr.length / 2];
+        System.arraycopy(arr, 0, arrBak, 0, size);
+        arr = arrBak;
+    }
+
+    return arr.length;
+}
+```
+
+> 通过`伸缩策略`，让我们不用担心数组是一个不需要管空间是否够不够的问题。策略有很多种，但是主要还是
+> 为了减少数组的操作的时候数组发生伸缩的次数，主要优化就是这个部分.
+
+*插入*
+```java
+
+```
+*删除*
+```java
+
+```
+*查询*
+```java
+
+```
+#### 1.2. 保持数组数据的连续性
 
 ### 2. 支持伸缩的数组
 
