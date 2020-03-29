@@ -28,7 +28,7 @@ type var = array[index];
 
 > 一般来说，为了保持数组空间有序性，然后就会通过一定策略(*什么时候要扩大空间量，什么时候缩小空间量*)来对数组进行空间的 `伸缩`。
 
-**1.1.1.两倍空间伸缩策略（我自己起的，多当真，实际上就是依据 2 倍空间 size 来进行空间的伸缩）**
+**两倍空间伸缩策略（我自己起的，多当真，实际上就是依据 2 倍空间 size 来进行空间的伸缩）**
 
 ```java
 // 定义了伸缩的接口
@@ -41,14 +41,20 @@ public interface TelescopicStrategy {
 public int stretch() {
     if(arr == null ||  size + 1 >=  arr.length) {
         // 伸展
-        Object[] arrBak = new Object[size * 2];
-        if(arr != null)
-            System.arraycopy(arr, 0, arrBak, 0, arr.length);
-            arr = arrBak;
+        int stretchLength = size * 2;
+        if(stretchLength == 0) {
+            stretchLength = 2;
         }
 
-        return arr.length;
+        Object[] arrBak = new Object[stretchLength];
+        if(arr != null)
+            System.arraycopy(arr, 0, arrBak, 0, arr.length);
+
+        arr = arrBak;
     }
+
+    return arr.length;
+}
 
 @Override
 public int shrink() {
@@ -66,6 +72,39 @@ public int shrink() {
 > 通过`伸缩策略`，让我们不用担心数组是一个不需要管空间是否够不够的问题。策略有很多种，但是主要还是
 > 为了减少数组的操作的时候数组发生伸缩的次数，主要优化就是这个部分.
 
+
+#### 1.2. 保持数组数据的连续性
+
+> 数组为了保持数据的连续性，在数组插入和删除的时候，就会出现低效的操作行为。就是需要恢复数组的
+> 数组的连续性，不然如果数组出现数据空洞的话，就会出现数据丢失且失去了随机访问的特性了。
+
+##### 1.2.1. 插入
+
+> 插入元素到指定的位置(i)的时候，需要将i和后面的数据向后进行一次数据迁移。
+
+> 需要考虑两个情况，如果数据是有序的，那就别想了。一定是这样的 $O(n)$(别想着插入后排序，因为不能比 $O(n)$ 小的排序时间出现)。如果数据的有序性不需要考虑的话，那么就
+> 可以考虑将 $O(n)$ 变为 $O(1)$ 的操作了。
+
+**如果数据是无序的，那么比较好的一个解决方法就是将插入的元素的位置`i`的元素当作数组最后一个元素添加的方式处理**。
+
+```java
+public void insert(T ele, int index) {
+    if(index < 0 || index > size) {
+        return ;
+    }
+
+    T ele1 = (T)arr[index];
+    size++;
+
+    // 开始处理
+    stretch();
+    arr[index] = ele;
+    arr[size - 1] = ele1;
+}
+```
+
+##### 1.2.2. 删除
+
 *插入*
 ```java
 
@@ -78,7 +117,7 @@ public int shrink() {
 ```java
 
 ```
-#### 1.2. 保持数组数据的连续性
+
 
 ### 2. 支持伸缩的数组
 

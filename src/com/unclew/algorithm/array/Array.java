@@ -9,9 +9,11 @@ package com.unclew.algorithm.array;
  * @author wuyingqiang
  * @since 1.0
  */
-public interface Array {
-    void add(Object e);
-    Object get(int index);
-    void rem(Object e);
-    long length();
+public interface Array<T> {
+    void insert(T ele, int index);
+    T get(int index);
+    int indexOf(T e);
+    void add(T e);
+    void rem(T e);
+    T rem(int index);
 }
