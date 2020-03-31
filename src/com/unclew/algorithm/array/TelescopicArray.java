@@ -106,6 +106,6 @@ public class TelescopicArray<T> implements TelescopicStrategy, Array<T> {
 
 
     public static void main(String[] args) {
-        // 测试
+        // TDD 测试
     }
 }
